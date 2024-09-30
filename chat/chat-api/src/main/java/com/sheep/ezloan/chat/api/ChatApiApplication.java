@@ -1,13 +1,13 @@
-package com.sparta.chat.domain;
+package com.sheep.ezloan.chat.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChatDomainApplication {
+public class ChatApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ChatDomainApplication.class, args);
+        SpringApplication.run(ChatApiApplication.class, args);
     }
 
 }

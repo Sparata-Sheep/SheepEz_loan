@@ -1,4 +1,4 @@
-package com.sparta.chat.storage.entity;
+package com.sheep.ezloan.chat.storage.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

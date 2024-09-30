@@ -19,3 +19,7 @@ include 'support:monitoring'
 include 'example:example-domain'
 include 'example:example-api'
 include 'example:example-storage'
+
+include 'chat:chat-domain'
+include 'chat:chat-api'
+include 'chat:chat-storage'

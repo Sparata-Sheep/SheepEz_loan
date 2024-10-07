@@ -2,6 +2,6 @@ package com.sheep.ezloan.support.error;
 
 public enum ErrorCode {
 
-    E500
+    E500, E403
 
 }

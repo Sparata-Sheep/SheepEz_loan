@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@EntityScan(basePackages = "com.sheep.ezloan.example")
+@EntityScan(basePackages = "com.sheep.ezloan.lawyer")
 @EnableJpaRepositories(basePackages = "com.sheep.ezloan.lawyer")
 public class CoreJpaConfig {
 

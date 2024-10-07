@@ -1,4 +1,4 @@
-package com.sheep.ezloan.lawyer.doamin.model;
+package com.sheep.ezloan.lawyer.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +26,14 @@ public class Lawyer {
     private Boolean isAccepted;
 
     private Boolean isPublic;
+
+    public Lawyer modify(String nickname, String email, String introduction, String certificationInfo, String career) {
+        this.nickname = nickname;
+        this.email = email;
+        this.introduction = introduction;
+        this.certificationInfo = certificationInfo;
+        this.career = career;
+        return this;
+    }
 
 }

@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(":support:support-domain")
+    api project(":support:support-domain")
 
     annotationProcessor 'org.projectlombok:lombok'
 }

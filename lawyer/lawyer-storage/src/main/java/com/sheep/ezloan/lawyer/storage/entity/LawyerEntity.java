@@ -6,8 +6,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
-import com.sheep.ezloan.lawyer.doamin.model.Lawyer;
+import com.sheep.ezloan.lawyer.domain.model.Lawyer;
 import com.sheep.ezloan.support.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -19,12 +20,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "p_lawyers")
+@DynamicInsert
 public class LawyerEntity extends BaseEntity {
 
     @Id
     @Column(name = "lawyer_id")
     private Long id;
 
+    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
@@ -76,6 +79,17 @@ public class LawyerEntity extends BaseEntity {
             .isAccepted(isAccepted)
             .isPublic(isPublic)
             .build();
+    }
+
+    public LawyerEntity update(String nickname, String email, String introduction, String certificationInfo,
+            String career) {
+        this.nickname = nickname;
+        this.email = email;
+        this.introduction = introduction;
+        this.certificationInfo = certificationInfo;
+        this.career = career;
+
+        return this;
     }
 
 }

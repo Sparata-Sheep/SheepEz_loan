@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorType {
 
     DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "An unexpected error has occurred.",
-            LogLevel.ERROR);
+            LogLevel.ERROR),
+    FORBIDDEN(HttpStatus.FORBIDDEN, ErrorCode.E403, "접근 권한이 없습니다.", LogLevel.ERROR);
 
     private final HttpStatus status;
 

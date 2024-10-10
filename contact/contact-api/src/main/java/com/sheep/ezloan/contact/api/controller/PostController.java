@@ -4,7 +4,6 @@ import com.sheep.ezloan.contact.api.controller.dto.PostDto;
 import com.sheep.ezloan.contact.domain.model.PostResult;
 import com.sheep.ezloan.contact.domain.service.PostService;
 import com.sheep.ezloan.support.error.CoreApiException;
-import com.sheep.ezloan.support.error.ErrorType;
 import com.sheep.ezloan.support.model.DomainPage;
 import com.sheep.ezloan.support.response.ApiResponse;
 import jakarta.validation.Valid;

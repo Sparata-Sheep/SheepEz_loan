@@ -71,4 +71,8 @@ public class PostEntity extends BaseEntity {
         this.loanType = loanType;
     }
 
+    public void updateStatus(PostStatus status) {
+        this.status = status;
+    }
+
 }

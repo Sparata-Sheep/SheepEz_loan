@@ -3,6 +3,8 @@ package com.sheep.ezloan.contact.api.controller.dto;
 import com.sheep.ezloan.contact.domain.model.ContractResult;
 import com.sheep.ezloan.contact.domain.model.ContractStatus;
 import com.sheep.ezloan.support.model.DomainPage;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,10 +18,13 @@ public interface ContractDto {
     @Builder
     class Request {
 
+        @NotNull(message = "게시글 ID를 입력해주세요.")
         private final UUID postUuid;
 
+        @NotNull(message = "요청자 ID를 입력해주세요.")
         private final Long requestUserId;
 
+        @NotNull(message = "요청을 받는 사람의 ID를 입력해주세요.")
         private final Long receiveUserId;
 
     }

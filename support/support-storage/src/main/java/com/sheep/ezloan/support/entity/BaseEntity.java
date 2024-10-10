@@ -40,6 +40,10 @@ public class BaseEntity {
     @Column(length = 100)
     private Long deletedBy;
 
+    public BaseEntity() {
+        this.isDeleted = false;
+    }
+
     public void delete() {
         this.isDeleted = true;
     }

@@ -15,6 +15,7 @@ include 'support:support-domain'
 include 'support:support-storage'
 include 'support:logging'
 include 'support:monitoring'
+include 'support:error'
 
 include 'example:example-domain'
 include 'example:example-api'

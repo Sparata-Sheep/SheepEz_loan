@@ -6,7 +6,6 @@ import com.sheep.ezloan.contact.domain.repository.ContractRepository;
 import com.sheep.ezloan.contact.storage.custom.ContractRepositoryCustom;
 import com.sheep.ezloan.contact.storage.entity.ContractEntity;
 import com.sheep.ezloan.support.model.DomainPage;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
@@ -34,7 +34,12 @@ public class ContractRepositoryAdapter implements ContractRepository {
 
     @Override
     public ContractResult findByUuid(UUID contractUuid) {
-        return contractJpaRepository.findById(contractUuid).orElseThrow(EntityNotFoundException::new).toDomain();
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
+
+        return entity.toDomain();
     }
 
     @Override
@@ -43,7 +48,8 @@ public class ContractRepositoryAdapter implements ContractRepository {
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<ContractResult> contractResultPage = contractJpaRepository.findAll(pageable).map(ContractEntity::toDomain);
+        Page<ContractResult> contractResultPage = contractJpaRepository.findAllByIsDeletedFalse(pageable)
+            .map(ContractEntity::toDomain);
 
         return DomainPage.of(contractResultPage.getContent(), contractResultPage.getTotalElements(),
                 contractResultPage.getTotalPages(), contractResultPage.getNumber(), contractResultPage.getSize(),
@@ -66,7 +72,10 @@ public class ContractRepositoryAdapter implements ContractRepository {
 
     @Override
     public ContractResult acceptContract(UUID contractUuid) {
-        ContractEntity entity = contractJpaRepository.findById(contractUuid).orElseThrow(EntityNotFoundException::new);
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
 
         entity.accept();
         return contractJpaRepository.save(entity).toDomain();
@@ -74,7 +83,10 @@ public class ContractRepositoryAdapter implements ContractRepository {
 
     @Override
     public ContractResult requesterCompleteContract(UUID contractUuid) {
-        ContractEntity entity = contractJpaRepository.findById(contractUuid).orElseThrow(EntityNotFoundException::new);
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
 
         entity.requesterComplete();
         return contractJpaRepository.save(entity).toDomain();
@@ -82,7 +94,10 @@ public class ContractRepositoryAdapter implements ContractRepository {
 
     @Override
     public ContractResult receiverCompleteContract(UUID contractUuid) {
-        ContractEntity entity = contractJpaRepository.findById(contractUuid).orElseThrow(EntityNotFoundException::new);
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
 
         entity.receiverComplete();
         return contractJpaRepository.save(entity).toDomain();
@@ -90,7 +105,10 @@ public class ContractRepositoryAdapter implements ContractRepository {
 
     @Override
     public ContractResult requesterCancelContract(UUID contractUuid) {
-        ContractEntity entity = contractJpaRepository.findById(contractUuid).orElseThrow(EntityNotFoundException::new);
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
 
         entity.requesterCancel();
         return contractJpaRepository.save(entity).toDomain();
@@ -98,15 +116,24 @@ public class ContractRepositoryAdapter implements ContractRepository {
 
     @Override
     public ContractResult receiverCancelContract(UUID contractUuid) {
-        ContractEntity entity = contractJpaRepository.findById(contractUuid).orElseThrow(EntityNotFoundException::new);
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
 
         entity.receiverCancel();
         return contractJpaRepository.save(entity).toDomain();
     }
 
     @Override
-    public void delete(UUID contractUuid) {
-        contractJpaRepository.deleteById(contractUuid);
+    public UUID delete(UUID contractUuid) {
+        ContractEntity entity = contractJpaRepository.findByContractUuidAndIsDeletedFalse(contractUuid).orElse(null);
+
+        if (entity == null)
+            return null;
+        entity.delete();
+
+        return contractJpaRepository.save(entity).getContractUuid();
     }
 
 }

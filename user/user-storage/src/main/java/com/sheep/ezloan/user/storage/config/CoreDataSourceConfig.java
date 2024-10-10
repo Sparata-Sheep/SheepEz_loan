@@ -1,4 +1,4 @@
-package com.sheep.ezloan.example.storage.config;
+package com.sheep.ezloan.user.storage.config;
 
 import java.sql.SQLException;
 
@@ -31,7 +31,7 @@ public class CoreDataSourceConfig {
     @Profile("local")
     public HikariDataSource localCoreDataSource(@Qualifier("coreHikariConfig") HikariConfig config)
             throws SQLException {
-        Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9099").start();
+        Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
         return new HikariDataSource(config);
     }
 

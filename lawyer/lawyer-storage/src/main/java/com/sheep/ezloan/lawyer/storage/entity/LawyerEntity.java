@@ -51,8 +51,6 @@ public class LawyerEntity extends BaseEntity {
     @ColumnDefault("false")
     private Boolean isPublic;
 
-    // todo review
-
     @Builder
     public LawyerEntity(Long id, String nickname, String name, String email, String introduction,
             String certificationInfo, String career, Boolean isAccepted, Boolean isPublic) {

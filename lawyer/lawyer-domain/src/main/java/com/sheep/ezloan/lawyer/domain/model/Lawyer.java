@@ -1,5 +1,7 @@
 package com.sheep.ezloan.lawyer.domain.model;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +28,8 @@ public class Lawyer {
     private Boolean isAccepted;
 
     private Boolean isPublic;
+
+    private List<Review> reviewList;
 
     public Lawyer modify(String nickname, String email, String introduction, String certificationInfo, String career) {
         this.nickname = nickname;

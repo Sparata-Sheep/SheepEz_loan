@@ -1,0 +1,6 @@
+spring.application.name: user-storage-test
+
+spring:
+  config:
+    import:
+      - user-storage.yml

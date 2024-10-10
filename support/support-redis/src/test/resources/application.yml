@@ -1,0 +1,6 @@
+spring.application.name: support-redis-test
+
+spring:
+  config:
+    import:
+      - redis.yml

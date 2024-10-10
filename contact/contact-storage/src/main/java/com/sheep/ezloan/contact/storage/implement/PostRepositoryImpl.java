@@ -23,7 +23,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public Page<PostEntity> searchByKeyword(String keyword, Pageable pageable) {
         JPAQuery<PostEntity> query = queryFactory.selectFrom(postEntity)
-            .where(postEntity.title.contains(keyword).or(postEntity.content.contains(keyword)));
+            .where((postEntity.title.contains(keyword).or(postEntity.content.contains(keyword)))
+                .and(postEntity.isDeleted.eq(false)));
 
         List<PostEntity> results = query.fetch();
 

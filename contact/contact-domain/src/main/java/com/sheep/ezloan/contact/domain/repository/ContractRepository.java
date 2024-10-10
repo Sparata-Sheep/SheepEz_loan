@@ -26,6 +26,6 @@ public interface ContractRepository {
 
     ContractResult receiverCancelContract(UUID contractUuid);
 
-    void delete(UUID contractUuid);
+    UUID delete(UUID contractUuid);
 
 }

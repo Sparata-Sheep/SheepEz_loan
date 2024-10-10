@@ -4,11 +4,14 @@ import com.sheep.ezloan.contact.domain.model.LoanType;
 import com.sheep.ezloan.contact.domain.model.Post;
 import com.sheep.ezloan.contact.domain.model.PostResult;
 import com.sheep.ezloan.contact.domain.repository.PostRepository;
+import com.sheep.ezloan.support.error.CoreApiException;
+import com.sheep.ezloan.support.error.ErrorType;
 import com.sheep.ezloan.support.model.DomainPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -21,6 +24,7 @@ public class PostService {
     public PostResult createPost(String title, String content, LoanType loanType) {
         Long userId = 0L;
         String username = "temporary"; // 임시 유저 생성
+
         return postRepository.save(new Post(userId, username, title, content, loanType));
     }
 
@@ -36,18 +40,31 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResult getPost(UUID postUuid) {
-        return postRepository.findByUuid(postUuid);
+        PostResult result = postRepository.findByUuid(postUuid);
+
+        if (result == null) {
+            throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+        return result;
     }
 
     @Transactional
     public PostResult updatePost(UUID postUuid, String title, String content, LoanType loanType) {
-        return postRepository.update(postUuid, title, content, loanType);
+        PostResult result = postRepository.update(postUuid, title, content, loanType);
+
+        if (result == null) {
+            throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+        return result;
     }
 
     @Transactional
     public UUID deletePost(UUID postUuid) {
-        postRepository.delete(postUuid);
-        return postUuid;
+        UUID resultUuid = postRepository.delete(postUuid);
+        if (resultUuid == null) {
+            throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+        return resultUuid;
     }
 
 }

@@ -25,7 +25,8 @@ public class ContractRepositoryImpl implements ContractRepositoryCustom {
     @Override
     public Page<ContractEntity> searchByUsername(String username, Pageable pageable) {
         JPAQuery<ContractEntity> query = queryFactory.selectFrom(contractEntity)
-            .where(contractEntity.requestUsername.eq(username).or(contractEntity.receiveUsername.eq(username)));
+            .where((contractEntity.requestUsername.eq(username).or(contractEntity.receiveUsername.eq(username)))
+                .and(contractEntity.isDeleted.eq(false)));
 
         List<ContractEntity> results = query.fetch();
 

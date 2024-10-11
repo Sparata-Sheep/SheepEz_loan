@@ -21,6 +21,8 @@ include 'support:logging'
 include 'support:monitoring'
 include 'support:support-redis'
 include 'support:support-authentication'
+include 'support:error'
+
 
 include 'example:example-domain'
 include 'example:example-api'

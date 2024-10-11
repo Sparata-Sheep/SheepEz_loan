@@ -3,13 +3,12 @@ package com.sheep.ezloan.contact.storage.implement;
 import com.sheep.ezloan.contact.domain.model.LoanType;
 import com.sheep.ezloan.contact.domain.model.Post;
 import com.sheep.ezloan.contact.domain.model.PostResult;
+import com.sheep.ezloan.contact.domain.model.PostStatus;
 import com.sheep.ezloan.contact.domain.repository.PostRepository;
 import com.sheep.ezloan.contact.storage.custom.PostRepositoryCustom;
 import com.sheep.ezloan.contact.storage.entity.PostEntity;
 import com.sheep.ezloan.support.model.DomainPage;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-@Slf4j
 public class PostRepositoryAdapter implements PostRepository {
 
     private final PostJpaRepository postJpaRepository;
@@ -40,7 +38,7 @@ public class PostRepositoryAdapter implements PostRepository {
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<PostResult> postResultPage = postJpaRepository.findAll(pageable).map(PostEntity::toDomain);
+        Page<PostResult> postResultPage = postJpaRepository.findAllByIsDeletedFalse(pageable).map(PostEntity::toDomain);
 
         // spring-data-page -> custom page 매핑
         return DomainPage.of(postResultPage.getContent(), postResultPage.getTotalElements(),
@@ -65,12 +63,16 @@ public class PostRepositoryAdapter implements PostRepository {
 
     @Override
     public PostResult findByUuid(UUID postUuid) {
-        return postJpaRepository.findById(postUuid).map(PostEntity::toDomain).orElseThrow(EntityNotFoundException::new);
+        return postJpaRepository.findByPostUuidAndIsDeletedFalse(postUuid).map(PostEntity::toDomain).orElse(null);
     }
 
     @Override
     public PostResult update(UUID postUuid, String title, String content, LoanType loanType) {
-        PostEntity entity = postJpaRepository.findById(postUuid).orElseThrow(EntityNotFoundException::new);
+        PostEntity entity = postJpaRepository.findByPostUuidAndIsDeletedFalse(postUuid).orElse(null);
+
+        if (entity == null) {
+            return null;
+        }
 
         if (title == null)
             title = entity.getTitle();
@@ -81,14 +83,27 @@ public class PostRepositoryAdapter implements PostRepository {
 
         entity.update(title, content, loanType);
 
-        log.info(entity.getTitle());
-
         return postJpaRepository.save(entity).toDomain();
     }
 
     @Override
-    public void delete(UUID postUuid) {
-        postJpaRepository.deleteById(postUuid);
+    public PostResult updateStatus(UUID postUuid, PostStatus status) {
+        PostEntity entity = postJpaRepository.findByPostUuidAndIsDeletedFalse(postUuid).orElse(null);
+        if (entity == null)
+            return null;
+
+        entity.updateStatus(status);
+        return postJpaRepository.save(entity).toDomain();
+    }
+
+    @Override
+    public UUID delete(UUID postUuid) {
+        PostEntity entity = postJpaRepository.findByPostUuidAndIsDeletedFalse(postUuid).orElse(null);
+        if (entity == null)
+            return null;
+
+        entity.delete();
+        return postJpaRepository.save(entity).getPostUuid();
     }
 
 }

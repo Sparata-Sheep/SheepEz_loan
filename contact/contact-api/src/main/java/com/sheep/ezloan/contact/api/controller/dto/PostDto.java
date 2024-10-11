@@ -4,6 +4,9 @@ import com.sheep.ezloan.contact.domain.model.LoanType;
 import com.sheep.ezloan.contact.domain.model.PostResult;
 import com.sheep.ezloan.contact.domain.model.PostStatus;
 import com.sheep.ezloan.support.model.DomainPage;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,10 +21,17 @@ public interface PostDto {
     @Builder
     class Request {
 
+        @NotNull(message = "제목은 null 일 수 없습니다.")
+        @NotBlank(message = "제목을 입력해주세요.")
+        @Size(max = 100, message = "제목은 100자 이하로 입력해주세요.")
         private final String title;
 
+        @NotNull(message = "내용은 null 일 수 없습니다.")
+        @NotBlank(message = "내용을 입력해주세요.")
+        @Size(max = 3000, message = "내용은 100자 이하로 입력해주세요.")
         private final String content;
 
+        @NotNull(message = "loanType 은 null 일 수 없습니다.")
         private final LoanType loanType;
 
     }

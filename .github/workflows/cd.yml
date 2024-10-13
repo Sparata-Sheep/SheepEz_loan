@@ -51,6 +51,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # 리포지토리 체크아웃 추가
 
+      - name: Set ENV
+        run: |
+          echo "${{ secrets.DOCKER_ENV }}" | base64 --decode > .env
+
       - name: List files  # 파일 확인용 스텝 추가
         run: ls -al
       # docker compose로 container를 실행하기 위해 docker-compose.yml 을 EC2로 복사합니다.

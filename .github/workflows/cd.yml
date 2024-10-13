@@ -28,7 +28,6 @@ jobs:
       - name: Set ENV
         run: |
           echo "${{ secrets.DOCKER_ENV }}" | base64 --decode > .env
-          find src
 
       - name: Build with Gradle
         run: ./gradlew build --exclude-task test
@@ -58,7 +57,7 @@ jobs:
           key: ${{ env.PRIVATE_KEY }}
           script: |
 
-            docker compose down
-            docker compose pull
-            docker compose up -d
+            sudo docker compose down
+            sudo docker compose pull
+            sudo docker compose up -d
 

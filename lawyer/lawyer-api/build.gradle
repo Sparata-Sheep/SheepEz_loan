@@ -1,0 +1,16 @@
+bootJar.enabled = true
+jar.enabled = false
+
+dependencies {
+    implementation project(":support:monitoring")
+    implementation project(":support:logging")
+    implementation project(":support:support-api")
+
+    implementation project(":lawyer:lawyer-domain")
+    runtimeOnly project(":lawyer:lawyer-storage")
+
+    testImplementation project(":tests:api-docs")
+
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+}

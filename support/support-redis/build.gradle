@@ -1,0 +1,11 @@
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0' // 최신 Jackson Databind 버전
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0' // Core 라이브러리
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0' // Annotations 라이브러리
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+}

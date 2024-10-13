@@ -9,13 +9,35 @@ pluginManagement {
 
 rootProject.name = 'ez-loan'
 
+include 'cloud:eureka'
+include 'cloud:gateway'
+include 'cloud:auth'
+
 include 'tests:api-docs'
 include 'support:support-api'
 include 'support:support-domain'
 include 'support:support-storage'
 include 'support:logging'
 include 'support:monitoring'
+include 'support:support-redis'
+include 'support:support-authentication'
+include 'support:error'
+
 
 include 'example:example-domain'
 include 'example:example-api'
 include 'example:example-storage'
+
+include 'user:user-api'
+include 'user:user-storage'
+
+
+include 'contact:contact-domain'
+include 'contact:contact-api'
+include 'contact:contact-storage'
+
+include 'lawyer:lawyer-api'
+include 'lawyer:lawyer-domain'
+include 'lawyer:lawyer-storage'
+
+include 'clients:client-user'

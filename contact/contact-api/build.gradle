@@ -1,0 +1,17 @@
+bootJar.enabled = true
+jar.enabled = false
+
+dependencies {
+    implementation project(":support:monitoring")
+    implementation project(":support:logging")
+    implementation project(":support:error")
+    implementation project(":support:support-api")
+
+    implementation project(":contact:contact-domain")
+    runtimeOnly project(":contact:contact-storage")
+
+    testImplementation project(":tests:api-docs")
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}

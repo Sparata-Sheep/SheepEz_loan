@@ -1,0 +1,56 @@
+spring.application.name: user-service
+spring.profiles.active: local
+
+spring:
+  config:
+    import:
+      - monitoring.yml
+      - logging.yml
+      - user-storage.yml
+  web.resources.add-mappings: false
+
+server:
+  tomcat:
+    max-connections: 20000
+    threads:
+      max: 600
+      min-spare: 100
+  port: 19092
+
+admin:
+  default:
+    password: ${password}
+
+
+---
+spring.config.activate.on-profile: local
+
+jwt:
+  secret:
+    key: ${jwt.secret.key}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+---
+spring.config.activate.on-profile: local-dev
+
+
+---
+spring.config.activate.on-profile: dev
+
+jwt:
+  secret:
+    key: ${jwt.secret.key}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+---
+spring.config.activate.on-profile: staging
+
+
+---
+spring.config.activate.on-profile: live
+

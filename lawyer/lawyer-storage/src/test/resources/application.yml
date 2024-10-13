@@ -1,0 +1,6 @@
+spring.application.name: lawyer-storage-test
+
+spring:
+  config:
+    import:
+      - lawyer-storage.yml

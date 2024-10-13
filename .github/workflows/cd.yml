@@ -41,7 +41,8 @@ jobs:
           docker compose build
           ./dockerPush.sh
         env:
-          DOCKER_HUB_PATH: 'sheep-ezloan'
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PATH: 'sheep-ezloan'
 
   deploy-to-ec2:
 
@@ -83,7 +84,7 @@ jobs:
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ env.PRIVATE_KEY }}
           script: |
-            echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+            echo "${{ secrets.DOCKER_HUB_TOKEN }}" | sudo docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
             sudo docker compose down
             sudo docker compose pull
             sudo docker compose up -d

@@ -1,7 +1,4 @@
-user:
-  api:
-    url: http://localhost:19092
-    exampleValue: exampleDefaultValue
+
 
 spring.cloud.openfeign:
   client:
@@ -20,10 +17,18 @@ spring.cloud.openfeign:
 ---
 spring.config.activate.on-profile: local
 
+user:
+  api:
+    url: http://localhost:19092
+    exampleValue: exampleDefaultValue
+
 ---
-spring.config.activate.on-profile:
-  - local-dev
-  - dev
+spring.config.activate.on-profile: dev
+
+user:
+  api:
+    url: http://user:19092
+    exampleValue: exampleDefaultValue
 
 ---
 spring.config.activate.on-profile:

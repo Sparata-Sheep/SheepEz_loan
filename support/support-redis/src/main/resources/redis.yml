@@ -3,3 +3,19 @@ spring:
     redis:
       host: localhost  # Redis ??? ????
       port: 6379       # Redis ?? ??
+---
+spring.config.activate.on-profile: local
+spring:
+  data:
+    redis:
+      host: host.docker.internal  # Redis ??? ????
+      port: 6379       # Redis ?? ??
+
+---
+spring.config.activate.on-profile: dev
+spring:
+  data:
+    redis:
+      host: ${redis.host}  # Redis ??? ????
+      port: 6379       # Redis ?? ??
+

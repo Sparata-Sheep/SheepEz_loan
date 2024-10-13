@@ -1,0 +1,64 @@
+name: CODE DEPLOY
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  EC2_HOST: sparta
+  EC2_SSH_USER: ubuntu
+  PRIVATE_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
+
+jobs:
+  build-and-push-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: ⚙️ Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Gradle execute permission for gradlew # Gradle로 빌드할 것이며, 빌드를 하기위한 gradlew에 권한을 부여
+        run: chmod +x ./gradlew
+        shell: bash # 돌아가는 환경을 bash shell로 하겠다.
+
+      - name: Set ENV
+        run: |
+          echo "${{ secrets.DOCKER_ENV }}" | base64 --decode > .env
+          find src
+
+      - name: Build with Gradle
+        run: ./gradlew build --exclude-task test
+        shell: bash
+
+      - name: Login to Docker Hub using Access Token
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build the Docker image # 도커 이미지 빌드
+        run: |
+          docker compose build
+          ./dockerPush.sh
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+
+  deploy-to-ec2:
+
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ env.PRIVATE_KEY }}
+          script: |
+
+            docker compose down
+            docker compose pull
+            docker compose up -d
+

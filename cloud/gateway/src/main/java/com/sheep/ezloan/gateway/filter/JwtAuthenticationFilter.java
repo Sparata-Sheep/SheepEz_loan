@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
@@ -15,15 +16,20 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.sheep.ezloan.support.redis.service.RedisService;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Component
 @Order(0) // 필터 순서를 지정
+@Slf4j
 public class JwtAuthenticationFilter implements GlobalFilter {
 
     private final WebClient.Builder webClientBuilder;
 
     private final RedisService redisService;
+
+    @Value("${spring.cloud.gateway.routes[0].uri}")
+    private String authUrl;
 
     @Autowired
     public JwtAuthenticationFilter(WebClient.Builder webClientBuilder, RedisService redisService) {
@@ -76,7 +82,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             GatewayFilterChain chain) {
         return webClientBuilder.build()
             .post()
-            .uri("http://localhost:19091/api/v1/auth/validate-token")
+            .uri(authUrl + "/api/v1/auth/validate-token")
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
             .retrieve()
             .bodyToMono(Map.class)
@@ -97,6 +103,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
     }
 
     private Mono<Void> handleUnauthorized(ServerWebExchange exchange) {
+        log.warn("fail to connect : {}", authUrl);
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         return exchange.getResponse().setComplete();
     }

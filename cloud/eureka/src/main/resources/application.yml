@@ -3,6 +3,16 @@ spring:
     name: eureka
 server:
   port: 8761
+  address: 0.0.0.0
+
+---
+spring.config.activate.on-profile: local
+spring:
+  application:
+    name: eureka
+server:
+  port: 8761
+  address: 0.0.0.0
 eureka:
   client:
     register-with-eureka: false
@@ -11,4 +21,19 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   instance:
     hostname: localhost
-
+---
+spring.config.activate.on-profile: dev
+spring:
+  application:
+    name: eureka
+server:
+  port: 8761
+  address: 0.0.0.0
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+  instance:
+    hostname: eureka

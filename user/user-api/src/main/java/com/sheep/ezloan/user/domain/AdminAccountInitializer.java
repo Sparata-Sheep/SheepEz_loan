@@ -27,14 +27,17 @@ public class AdminAccountInitializer {
         return args -> {
             // admin 계정이 이미 있는지 확인
 
-            // 기본 admin 계정 생성
-            UserEntity admin = UserEntity.builder()
-                .username("admin")
-                .password(adminPassword) // 초기 비밀번호 설정
-                .role(RoleType.MASTER)// 최고 권한 부여
-                .build();
+            UserEntity admin = userRepository.findByUsername("admin").orElse(null);
 
-            userRepository.save(admin);
+            // 기본 admin 계정 생성
+            if (admin == null) {
+                admin = UserEntity.builder()
+                    .username("admin")
+                    .password(adminPassword) // 초기 비밀번호 설정
+                    .role(RoleType.MASTER)// 최고 권한 부여
+                    .build();
+                userRepository.save(admin);
+            }
             System.out.println("Master 계정이 생성되었습니다.");
         };
     }

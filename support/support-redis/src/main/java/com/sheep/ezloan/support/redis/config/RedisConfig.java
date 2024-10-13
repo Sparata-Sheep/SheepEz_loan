@@ -1,5 +1,6 @@
 package com.sheep.ezloan.support.redis.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +16,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EntityScan(basePackages = "com.phoenix.logistics.storage.db.core.redis")
 public class RedisConfig {
 
+    @Value("${spring.data.redis.host}")
+    private String redisHost;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory("localhost", 6379); // 호스트와 포트 설정
+        return new LettuceConnectionFactory(redisHost, 6379); // 호스트와 포트 설정
     }
 
     @Bean

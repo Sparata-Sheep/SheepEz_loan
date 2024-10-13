@@ -1,0 +1,50 @@
+services:
+
+  eureka:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./cloud/eureka
+    ports:
+      - "8761:8761"
+    image: sheep-ezloan/eureka
+
+
+  gateway:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./cloud/gateway
+    ports:
+      - "80:19090"
+    image: sheep-ezloan/gateway
+    depends_on:
+      - eureka
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+
+  auth:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./cloud/auth
+    ports:
+      - "19091:19091"
+    image: sheep-ezloan/auth
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+  user:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./user/user-api
+    ports:
+      - "19092:19092"
+    image: sheep-ezloan/user
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      PASSWORD: ${PASSWORD}
+      STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
+      STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
+      STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}

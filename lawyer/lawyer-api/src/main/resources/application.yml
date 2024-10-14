@@ -1,4 +1,4 @@
-spring.application.name: lawyer-api
+spring.application.name: lawyer-service
 spring.profiles.active: local
 
 spring:
@@ -25,7 +25,10 @@ server:
 ---
 spring.config.activate.on-profile: local
 
-
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 ---
 spring.config.activate.on-profile: local-dev
 
@@ -33,7 +36,10 @@ spring.config.activate.on-profile: local-dev
 ---
 spring.config.activate.on-profile: dev
 
-
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
 ---
 spring.config.activate.on-profile: staging
 

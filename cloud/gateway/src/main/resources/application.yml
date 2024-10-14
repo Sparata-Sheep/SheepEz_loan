@@ -84,7 +84,7 @@ spring:
         - id: contact-service
           uri: http://contact:19094
           predicates:
-            - Path=/api/v1/orders/**
+            - Path=/api/v1/contracts/**, /api/v1/posts/**
 
 eureka:
   client:

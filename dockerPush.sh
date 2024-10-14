@@ -1,4 +1,4 @@
-services=("eureka" "gateway" "auth" "user")
+services=("eureka" "gateway" "auth" "user" "lawyer" "contact")
 for service in "${services[@]}"
 do
   imageName="$service"

@@ -7,7 +7,7 @@ services:
         - FILE_DIRECTORY=./cloud/eureka
     ports:
       - "8761:8761"
-    image: sheep-ezloan/eureka
+    image: ${DOCKER_HUB_USERNAME}/eureka
 
 
   gateway:
@@ -17,7 +17,7 @@ services:
         - FILE_DIRECTORY=./cloud/gateway
     ports:
       - "80:19090"
-    image: sheep-ezloan/gateway
+    image: ${DOCKER_HUB_USERNAME}/gateway
     depends_on:
       - eureka
     environment:
@@ -30,7 +30,7 @@ services:
         - FILE_DIRECTORY=./cloud/auth
     ports:
       - "19091:19091"
-    image: sheep-ezloan/auth
+    image: ${DOCKER_HUB_USERNAME}/auth
     environment:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
@@ -41,7 +41,7 @@ services:
         - FILE_DIRECTORY=./user/user-api
     ports:
       - "19092:19092"
-    image: sheep-ezloan/user
+    image: ${DOCKER_HUB_USERNAME}/user
     environment:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       PASSWORD: ${PASSWORD}

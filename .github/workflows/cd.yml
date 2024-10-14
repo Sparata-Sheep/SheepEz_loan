@@ -28,7 +28,6 @@ jobs:
       - name: Set ENV
         run: |
           echo "${{ secrets.DOCKER_ENV }}" | base64 --decode > .env
-          find src
 
       - name: Build with Gradle
         run: ./gradlew build --exclude-task test
@@ -43,6 +42,7 @@ jobs:
           ./dockerPush.sh
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PATH: 'sheep-ezloan'
 
   deploy-to-ec2:
 
@@ -50,15 +50,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3  # 리포지토리 체크아웃 추가
+
+      - name: Set ENV
+        run: |
+          echo "${{ secrets.DOCKER_ENV }}" | base64 --decode > .env
+
+      - name: List files  # 파일 확인용 스텝 추가
+        run: ls -al
+      # docker compose로 container를 실행하기 위해 docker-compose.yml 을 EC2로 복사합니다.
+      - name: Copy Docker compose file to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ env.PRIVATE_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/ubuntu"
+
+      - name: Copy .env file to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ env.PRIVATE_KEY }}
+          source: ".env"
+          target: "/home/ubuntu"
+
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ env.PRIVATE_KEY }}
           script: |
-
-            docker compose down
-            docker compose pull
-            docker compose up -d
+            echo "${{ secrets.DOCKER_HUB_TOKEN }}" | sudo docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+            sudo docker compose down
+            sudo docker compose pull
+            sudo docker compose up -d
 

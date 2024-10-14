@@ -22,7 +22,7 @@ spring:
         - id: contact-service
           uri: http://localhost:19094
           predicates:
-            - Path=/api/v1/contacts/**
+            - Path=/api/v1/contracts/**, /api/v1/posts/**
 ---
 spring.config.activate.on-profile: local
 
@@ -50,7 +50,7 @@ spring:
         - id: contact-service
           uri: http://localhost:19094
           predicates:
-            - Path=/api/v1/contacts/**
+            - Path=/api/v1/contracts/**, /api/v1/posts/**
 
 eureka:
   client:
@@ -84,7 +84,7 @@ spring:
         - id: contact-service
           uri: http://contact:19094
           predicates:
-            - Path=/api/v1/contacts/**
+            - Path=/api/v1/contracts/**, /api/v1/posts/**
 
 eureka:
   client:

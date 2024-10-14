@@ -1,7 +1,7 @@
 spring:
   data:
     redis:
-      host: localhost  # Redis ??? ????
+      host: host.docker.internal  # Redis ??? ????
       port: 6379       # Redis ?? ??
 ---
 spring.config.activate.on-profile: local

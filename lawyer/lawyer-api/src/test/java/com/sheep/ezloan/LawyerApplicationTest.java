@@ -2,7 +2,7 @@ package com.sheep.ezloan;
 
 import org.junit.jupiter.api.Test;
 
-public class LawyerApplicationTest extends ContextTest {
+public class LawyerApplicationTest {
 
     @Test
     public void shouldBeLoadedContext() {

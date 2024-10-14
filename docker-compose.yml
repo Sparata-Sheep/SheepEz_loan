@@ -48,3 +48,29 @@ services:
       STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
       STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
       STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}
+
+  lawyer:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./lawyer/lawyer-api
+    ports:
+      - "19093:19093"
+    image: ${DOCKER_HUB_USERNAME}/lawyer
+    environment:
+      STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
+      STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
+      STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}
+
+  contact:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./contact/contact-api
+    ports:
+      - "19094:19094"
+    image: ${DOCKER_HUB_USERNAME}/contact
+    environment:
+      STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
+      STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
+      STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}

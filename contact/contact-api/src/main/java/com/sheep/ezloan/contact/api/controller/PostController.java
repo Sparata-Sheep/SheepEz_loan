@@ -23,11 +23,12 @@ public class PostController {
 
     @PostMapping
     public ApiResponse<?> createPost(@RequestHeader("X-User-Id") Long userId,
-                                     @Valid @RequestBody PostDto.Request postDto) {
+            @RequestHeader("X-Username") String username, @Valid @RequestBody PostDto.Request postDto) {
         PostResult post;
 
         try {
-            post = postService.createPost(userId, postDto.getTitle(), postDto.getContent(), postDto.getLoanType());
+            post = postService.createPost(userId, username, postDto.getTitle(), postDto.getContent(),
+                    postDto.getLoanType());
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -80,11 +81,11 @@ public class PostController {
 
     @PutMapping("/{postUuid}")
     public ApiResponse<?> updatePost(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
-                                     @PathVariable(value = "postUuid") UUID postUuid,
-            @RequestBody PostDto.Request postDto) {
+            @PathVariable(value = "postUuid") UUID postUuid, @RequestBody PostDto.Request postDto) {
         PostResult post;
         try {
-            post = postService.updatePost(userId, role, postUuid, postDto.getTitle(), postDto.getContent(), postDto.getLoanType());
+            post = postService.updatePost(userId, role, postUuid, postDto.getTitle(), postDto.getContent(),
+                    postDto.getLoanType());
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -94,7 +95,7 @@ public class PostController {
 
     @DeleteMapping("/{postUuid}")
     public ApiResponse<?> deletePost(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
-                                     @PathVariable(value = "postUuid") UUID postUuid) {
+            @PathVariable(value = "postUuid") UUID postUuid) {
         PostDto.DeleteResponse deletedPost;
         try {
             deletedPost = PostDto.DeleteResponse.of(postService.deletePost(userId, role, postUuid));

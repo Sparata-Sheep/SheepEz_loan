@@ -21,9 +21,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public PostResult createPost(Long userId, String title, String content, LoanType loanType) {
-        String username = "temporary"; // 임시 유저 생성
-
+    public PostResult createPost(Long userId, String username, String title, String content, LoanType loanType) {
         return postRepository.save(new Post(userId, username, title, content, loanType));
     }
 
@@ -48,7 +46,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResult updatePost(Long userId, String role, UUID postUuid, String title, String content, LoanType loanType) {
+    public PostResult updatePost(Long userId, String role, UUID postUuid, String title, String content,
+            LoanType loanType) {
         checkRole(userId, role, postUuid);
 
         return postRepository.update(postUuid, title, content, loanType);
@@ -67,7 +66,7 @@ public class PostService {
         if (result == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
         }
-        if(!Objects.equals(role, "MASTER") && !Objects.equals(userId, result.getUserId())){
+        if (!Objects.equals(role, "MASTER") && !Objects.equals(userId, result.getUserId())) {
             throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
         }
     }

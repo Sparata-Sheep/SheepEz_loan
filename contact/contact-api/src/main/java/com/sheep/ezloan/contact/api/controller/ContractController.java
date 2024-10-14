@@ -22,13 +22,13 @@ public class ContractController {
     private final ContractService contractService;
 
     @PostMapping
-    public ApiResponse<?> createContract(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
+    public ApiResponse<?> createContract(@RequestHeader("X-Username") String username,
             @Valid @RequestBody ContractDto.Request contractDto) {
         ContractResult contract;
 
         try {
-            contract = contractService.createContract(userId, role, contractDto.getPostUuid(),
-                    contractDto.getRequestUserId(), contractDto.getReceiveUserId());
+            contract = contractService.createContract(username, contractDto.getPostUuid(),
+                    contractDto.getRequestUserId(), contractDto.getReceiveUserId(), contractDto.getReceiveUsername());
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());

@@ -22,19 +22,14 @@ public class ContractService {
     private final PostRepository postRepository;
 
     @Transactional
-    public ContractResult createContract(Long userId, String role, UUID postUuid, Long requestUserId,
-            Long receiveUserId) {
+    public ContractResult createContract(String username, UUID postUuid, Long requestUserId, Long receiveUserId,
+            String receiveUsername) {
 
         if (postRepository.findByUuid(postUuid) == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
         }
 
-        // 임시 유저네임 생성
-        String requestUsername = "temporaryUser1";
-        String receiveUsername = "temporaryUser2";
-
-        return contractRepository
-            .save(new Contract(postUuid, requestUserId, receiveUserId, requestUsername, receiveUsername));
+        return contractRepository.save(new Contract(postUuid, requestUserId, receiveUserId, username, receiveUsername));
     }
 
     @Transactional(readOnly = true)
@@ -74,7 +69,7 @@ public class ContractService {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
         }
 
-        if(!Objects.equals(role, "MASTER") && !Objects.equals(userId, result.getReceiveUserId())) {
+        if (!Objects.equals(role, "MASTER") && !Objects.equals(userId, result.getReceiveUserId())) {
             throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
         }
 

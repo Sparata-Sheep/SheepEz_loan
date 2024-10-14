@@ -27,6 +27,9 @@ public interface ContractDto {
         @NotNull(message = "요청을 받는 사람의 ID를 입력해주세요.")
         private final Long receiveUserId;
 
+        @NotNull(message = "요청을 받는 사람의 닉네임을 입력해주세요.")
+        private final String receiveUsername;
+
     }
 
     @Data

@@ -4,12 +4,14 @@ import com.sheep.ezloan.contact.api.controller.dto.ContractDto;
 import com.sheep.ezloan.contact.domain.model.ContractResult;
 import com.sheep.ezloan.contact.domain.service.ContractService;
 import com.sheep.ezloan.support.error.CoreApiException;
+import com.sheep.ezloan.support.error.ErrorType;
 import com.sheep.ezloan.support.model.DomainPage;
 import com.sheep.ezloan.support.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -20,12 +22,13 @@ public class ContractController {
     private final ContractService contractService;
 
     @PostMapping
-    public ApiResponse<?> createContract(@Valid @RequestBody ContractDto.Request contractDto) {
+    public ApiResponse<?> createContract(@RequestHeader("X-Username") String username,
+            @Valid @RequestBody ContractDto.Request contractDto) {
         ContractResult contract;
 
         try {
-            contract = contractService.createContract(contractDto.getPostUuid(), contractDto.getRequestUserId(),
-                    contractDto.getReceiveUserId());
+            contract = contractService.createContract(username, contractDto.getPostUuid(),
+                    contractDto.getRequestUserId(), contractDto.getReceiveUserId(), contractDto.getReceiveUsername());
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -35,11 +38,12 @@ public class ContractController {
     }
 
     @GetMapping("/{contractUuid}")
-    public ApiResponse<?> getContract(@PathVariable(value = "contractUuid") UUID contractUuid) {
+    public ApiResponse<?> getContract(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
+            @PathVariable(value = "contractUuid") UUID contractUuid) {
         ContractResult contract;
 
         try {
-            contract = contractService.getContract(contractUuid);
+            contract = contractService.getContract(userId, role, contractUuid);
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -49,12 +53,12 @@ public class ContractController {
     }
 
     @GetMapping
-    public ApiResponse<?> getAllContracts(@RequestParam("page") int page, @RequestParam("size") int size,
-            @RequestParam("sort") String sort) {
+    public ApiResponse<?> getAllContracts(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
+            @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort) {
         DomainPage<ContractResult> contracts;
 
         try {
-            contracts = contractService.getAllContracts(page, size, sort);
+            contracts = contractService.getAllContracts(userId, role, page, size, sort);
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -64,11 +68,14 @@ public class ContractController {
     }
 
     @GetMapping("/search/{username}")
-    public ApiResponse<?> searchContracts(@PathVariable(value = "username") String username,
-            @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort) {
+    public ApiResponse<?> searchContracts(@RequestHeader("X-Role") String role,
+            @PathVariable(value = "username") String username, @RequestParam("page") int page,
+            @RequestParam("size") int size, @RequestParam("sort") String sort) {
         DomainPage<ContractResult> contracts;
 
         try {
+            if (!Objects.equals(role, "MASTER"))
+                throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
             contracts = contractService.searchContracts(username, page, size, sort);
         }
         catch (CoreApiException e) {
@@ -78,11 +85,12 @@ public class ContractController {
     }
 
     @PatchMapping("/accept/{contractUuid}")
-    public ApiResponse<?> acceptContract(@PathVariable(value = "contractUuid") UUID contractUuid) {
+    public ApiResponse<?> acceptContract(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
+            @PathVariable(value = "contractUuid") UUID contractUuid) {
         ContractResult contract;
 
         try {
-            contract = contractService.acceptContract(contractUuid);
+            contract = contractService.acceptContract(userId, role, contractUuid);
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -92,12 +100,12 @@ public class ContractController {
     }
 
     @PatchMapping("/complete/{contractUuid}")
-    public ApiResponse<?> completeContract(@RequestHeader("User-Id") Long userId,
-            @PathVariable(value = "contractUuid") UUID contractUuid) {
+    public ApiResponse<?> completeContract(@RequestHeader("X-User-Id") Long userId,
+            @RequestHeader("X-Role") String role, @PathVariable(value = "contractUuid") UUID contractUuid) {
         ContractResult contract;
 
         try {
-            contract = contractService.completeContract(contractUuid, userId);
+            contract = contractService.completeContract(userId, role, contractUuid);
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -107,12 +115,12 @@ public class ContractController {
     }
 
     @PatchMapping("/cancel/{contractUuid}")
-    public ApiResponse<?> cancelContract(@RequestHeader("User-Id") Long userId,
+    public ApiResponse<?> cancelContract(@RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
             @PathVariable(value = "contractUuid") UUID contractUuid) {
         ContractResult contract;
 
         try {
-            contract = contractService.cancelContract(contractUuid, userId);
+            contract = contractService.cancelContract(userId, role, contractUuid);
         }
         catch (CoreApiException e) {
             return ApiResponse.error(e.getErrorType());
@@ -122,10 +130,13 @@ public class ContractController {
     }
 
     @DeleteMapping("/{contractUuid}")
-    public ApiResponse<?> deleteContract(@PathVariable(value = "contractUuid") UUID contractUuid) {
+    public ApiResponse<?> deleteContract(@RequestHeader("X-Role") String role,
+            @PathVariable(value = "contractUuid") UUID contractUuid) {
         ContractDto.DeleteResponse deletedContract;
 
         try {
+            if (!Objects.equals(role, "MASTER"))
+                throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
             deletedContract = ContractDto.DeleteResponse.of(contractService.deleteContract(contractUuid));
         }
         catch (CoreApiException e) {

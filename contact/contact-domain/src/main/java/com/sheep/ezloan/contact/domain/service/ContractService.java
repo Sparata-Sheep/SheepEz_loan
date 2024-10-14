@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -21,7 +22,8 @@ public class ContractService {
     private final PostRepository postRepository;
 
     @Transactional
-    public ContractResult createContract(UUID postUuid, Long requestUserId, Long receiveUserId) {
+    public ContractResult createContract(Long userId, String role, UUID postUuid, Long requestUserId,
+            Long receiveUserId) {
 
         if (postRepository.findByUuid(postUuid) == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
@@ -36,18 +38,27 @@ public class ContractService {
     }
 
     @Transactional(readOnly = true)
-    public ContractResult getContract(UUID contractUuid) {
+    public ContractResult getContract(Long userId, String role, UUID contractUuid) {
         ContractResult result = contractRepository.findByUuid(contractUuid);
 
         if (result == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
         }
+
+        if (!Objects.equals(role, "MASTER") && !Objects.equals(userId, result.getRequestUserId())) {
+            throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
+        }
+
         return result;
     }
 
     @Transactional(readOnly = true)
-    public DomainPage<ContractResult> getAllContracts(int page, int size, String sortBy) {
-        return contractRepository.findAll(sortBy, page, size);
+    public DomainPage<ContractResult> getAllContracts(Long userId, String role, int page, int size, String sortBy) {
+        if (Objects.equals(role, "MASTER"))
+            return contractRepository.findAll(sortBy, page, size);
+
+        else
+            return contractRepository.findAllForUser(userId, sortBy, page, size);
     }
 
     @Transactional(readOnly = true)
@@ -56,11 +67,15 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractResult acceptContract(UUID contractUuid) {
+    public ContractResult acceptContract(Long userId, String role, UUID contractUuid) {
         ContractResult result = contractRepository.acceptContract(contractUuid);
 
         if (result == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+
+        if(!Objects.equals(role, "MASTER") && !Objects.equals(userId, result.getReceiveUserId())) {
+            throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
         }
 
         postRepository.updateStatus(result.getPostUuid(), PostStatus.IN_PROGRESS);
@@ -69,12 +84,20 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractResult completeContract(UUID contractUuid, Long userId) {
+    public ContractResult completeContract(Long userId, String role, UUID contractUuid) {
 
         ContractResult contract = contractRepository.findByUuid(contractUuid);
 
         if (contract == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+
+        if (Objects.equals(role, "MASTER")) {
+            contractRepository.requesterCompleteContract(contractUuid);
+            contract = contractRepository.receiverCompleteContract(contractUuid);
+            postRepository.updateStatus(contract.getPostUuid(), PostStatus.COMPLETED);
+
+            return contract;
         }
 
         if (contract.getRequestUserId().equals(userId))
@@ -94,11 +117,19 @@ public class ContractService {
     }
 
     @Transactional
-    public ContractResult cancelContract(UUID contractUuid, Long userId) {
+    public ContractResult cancelContract(Long userId, String role, UUID contractUuid) {
         ContractResult contract = contractRepository.findByUuid(contractUuid);
 
         if (contract == null) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+
+        if (Objects.equals(role, "MASTER")) {
+            contractRepository.requesterCancelContract(contractUuid);
+            contract = contractRepository.receiverCancelContract(contractUuid);
+            postRepository.updateStatus(contract.getPostUuid(), PostStatus.OPEN);
+
+            return contract;
         }
 
         if (contract.getRequestUserId().equals(userId))
@@ -119,6 +150,7 @@ public class ContractService {
 
     @Transactional
     public UUID deleteContract(UUID contractUuid) {
+
         UUID resultUuid = contractRepository.delete(contractUuid);
 
         if (resultUuid == null)

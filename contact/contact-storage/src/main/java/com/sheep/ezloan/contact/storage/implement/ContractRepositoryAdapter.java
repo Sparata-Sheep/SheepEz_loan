@@ -57,6 +57,20 @@ public class ContractRepositoryAdapter implements ContractRepository {
     }
 
     @Override
+    public DomainPage<ContractResult> findAllForUser(Long userId, String sortBy, int page, int size) {
+        Sort.Direction direction = Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<ContractResult> contractResultPage = contractRepositoryCustom.findAllForUser(userId, pageable)
+            .map(ContractEntity::toDomain);
+
+        return DomainPage.of(contractResultPage.getContent(), contractResultPage.getTotalElements(),
+                contractResultPage.getTotalPages(), contractResultPage.getNumber(), contractResultPage.getSize(),
+                contractResultPage.hasNext());
+    }
+
+    @Override
     public DomainPage<ContractResult> searchByUsername(String username, String sortBy, int page, int size) {
         Sort.Direction direction = Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortBy);

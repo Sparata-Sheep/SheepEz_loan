@@ -33,4 +33,15 @@ public class ContractRepositoryImpl implements ContractRepositoryCustom {
         return new PageImpl<>(results, pageable, results.size());
     }
 
+    @Override
+    public Page<ContractEntity> findAllForUser(Long userId, Pageable pageable) {
+        JPAQuery<ContractEntity> query = queryFactory.selectFrom(contractEntity)
+            .where((contractEntity.requestUserId.eq(userId).or(contractEntity.receiveUserId.eq(userId)))
+                .and(contractEntity.isDeleted.eq(false)));
+
+        List<ContractEntity> results = query.fetch();
+
+        return new PageImpl<>(results, pageable, results.size());
+    }
+
 }

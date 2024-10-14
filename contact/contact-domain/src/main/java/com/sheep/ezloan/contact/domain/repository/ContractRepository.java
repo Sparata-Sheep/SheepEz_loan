@@ -14,6 +14,8 @@ public interface ContractRepository {
 
     DomainPage<ContractResult> findAll(String sortBy, int page, int size);
 
+    DomainPage<ContractResult> findAllForUser(Long userId, String sortBy, int page, int size);
+
     DomainPage<ContractResult> searchByUsername(String username, String sortBy, int page, int size);
 
     ContractResult acceptContract(UUID contractUuid);

@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             .mutate()
             .header("X-User-Id", claims.get("sub").toString())
             .header("X-Role", claims.get("role").toString())
-            .header("X-USERNAME", claims.get("username").toString());
+            .header("X-Username", claims.get("username").toString());
     }
 
     private Mono<Void> validateTokenWithAuthServer(String token, String redisKey, ServerWebExchange exchange,

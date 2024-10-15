@@ -20,6 +20,17 @@ include 'example:example-domain'
 include 'example:example-api'
 include 'example:example-storage'
 
+include 'contact:contact-domain'
+include 'contact:contact-api'
+include 'contact:contact-storage'
+
+include 'lawyer:lawyer-api'
+include 'lawyer:lawyer-domain'
+include 'lawyer:lawyer-storage'
+
 include 'chat:chat-domain'
 include 'chat:chat-api'
 include 'chat:chat-storage'
+include 'chat:chat-webflux'
+
+include 'clients:client-post'

@@ -19,7 +19,7 @@ spring.config.activate.on-profile: local
 
 user:
   api:
-    url: http://localhost:19092
+    url: http://user:19092
     exampleValue: exampleDefaultValue
 
 ---

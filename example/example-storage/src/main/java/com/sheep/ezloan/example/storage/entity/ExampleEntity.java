@@ -12,12 +12,16 @@ import jakarta.persistence.Table;
 import com.sheep.ezloan.support.entity.BaseEntity;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "p_examples")
 public class ExampleEntity extends BaseEntity {
 

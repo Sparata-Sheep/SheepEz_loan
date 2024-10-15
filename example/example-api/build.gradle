@@ -10,4 +10,6 @@ dependencies {
     runtimeOnly project(":example:example-storage")
 
     testImplementation project(":tests:api-docs")
+
+    annotationProcessor 'org.projectlombok:lombok'
 }

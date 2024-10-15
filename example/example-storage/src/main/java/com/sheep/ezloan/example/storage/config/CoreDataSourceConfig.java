@@ -31,7 +31,7 @@ public class CoreDataSourceConfig {
     @Profile("local")
     public HikariDataSource localCoreDataSource(@Qualifier("coreHikariConfig") HikariConfig config)
             throws SQLException {
-        Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9096").start();
+        Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9099").start();
         return new HikariDataSource(config);
     }
 

@@ -1,6 +1,6 @@
 dependencies {
     api "org.springframework:spring-context"
     api "org.springframework:spring-tx"
-    compileOnly 'org.projectlombok:lombok'
+    api 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 }

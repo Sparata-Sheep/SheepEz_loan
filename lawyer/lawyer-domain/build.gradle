@@ -1,0 +1,5 @@
+dependencies {
+    api project(":support:support-domain")
+
+    annotationProcessor 'org.projectlombok:lombok'
+}

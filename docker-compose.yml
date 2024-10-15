@@ -1,0 +1,76 @@
+services:
+
+  eureka:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./cloud/eureka
+    ports:
+      - "8761:8761"
+    image: ${DOCKER_HUB_USERNAME}/eureka
+
+
+  gateway:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./cloud/gateway
+    ports:
+      - "80:19090"
+    image: ${DOCKER_HUB_USERNAME}/gateway
+    depends_on:
+      - eureka
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+
+  auth:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./cloud/auth
+    ports:
+      - "19091:19091"
+    image: ${DOCKER_HUB_USERNAME}/auth
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+  user:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./user/user-api
+    ports:
+      - "19092:19092"
+    image: ${DOCKER_HUB_USERNAME}/user
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      PASSWORD: ${PASSWORD}
+      STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
+      STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
+      STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}
+
+  lawyer:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./lawyer/lawyer-api
+    ports:
+      - "19093:19093"
+    image: ${DOCKER_HUB_USERNAME}/lawyer
+    environment:
+      STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
+      STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
+      STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}
+
+  contact:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./contact/contact-api
+    ports:
+      - "19094:19094"
+    image: ${DOCKER_HUB_USERNAME}/contact
+    environment:
+      STORAGE_DATABASE_URL: ${STORAGE_DATABASE_URL}
+      STORAGE_DATABASE_USERNAME: ${STORAGE_DATABASE_USERNAME}
+      STORAGE_DATABASE_PASSWORD: ${STORAGE_DATABASE_PASSWORD}

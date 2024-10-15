@@ -1,5 +1,6 @@
 package com.sheep.ezloan.contact.domain.service;
 
+import com.sheep.ezloan.contact.domain.client.UserClient;
 import com.sheep.ezloan.contact.domain.model.*;
 import com.sheep.ezloan.contact.domain.repository.ContractRepository;
 import com.sheep.ezloan.contact.domain.repository.PostRepository;
@@ -21,11 +22,17 @@ public class ContractService {
 
     private final PostRepository postRepository;
 
+    private final UserClient userClient;
+
     @Transactional
     public ContractResult createContract(String username, UUID postUuid, Long requestUserId, Long receiveUserId,
             String receiveUsername) {
 
         if (postRepository.findByUuid(postUuid) == null) {
+            throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+
+        if (!userClient.existsByUsername(receiveUsername)) {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
         }
 

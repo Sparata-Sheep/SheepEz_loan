@@ -1,4 +1,4 @@
-package com.sheep.ezloan.support.authentication.securityy;
+package com.sheep.ezloan.support.authentication.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

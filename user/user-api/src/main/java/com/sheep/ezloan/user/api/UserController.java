@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sheep.ezloan.support.authentication.securityy.SecurityUtil;
+import com.sheep.ezloan.support.authentication.security.SecurityUtil;
 import com.sheep.ezloan.user.api.dto.UserResponseDto;
 import com.sheep.ezloan.user.domain.UserService;
 import com.sheep.ezloan.user.storage.entity.RoleType;

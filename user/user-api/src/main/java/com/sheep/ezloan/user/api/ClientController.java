@@ -1,5 +1,7 @@
 package com.sheep.ezloan.user.api;
 
+import jakarta.annotation.security.PermitAll;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +18,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("feign/users")
+@RequestMapping("/feign/users")
 public class ClientController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto request) {
         UserResponseDto userResponse = userService.createUser(request);
         return ResponseEntity.ok(userResponse);

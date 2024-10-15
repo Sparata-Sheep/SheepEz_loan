@@ -1,4 +1,4 @@
-package com.sheep.ezloan.support.authentication.securityy;
+package com.sheep.ezloan.support.authentication.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

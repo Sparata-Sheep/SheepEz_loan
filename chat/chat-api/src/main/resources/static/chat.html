@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    #chatBox {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      background: white;
+      height: 300px;
+      overflow-y: scroll;
+      margin-bottom: 10px;
+    }
+    #messageInput {
+      width: calc(100% - 100px);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+<h1>채팅 애플리케이션</h1>
+<div id="chatBox"></div>
+<div>
+  <input id="messageInput" type="text" placeholder="메시지를 입력하세요..." />
+  <button onclick="sendMessage()">전송</button>
+</div>
+
+<script>
+  const chatSocket = new WebSocket('ws://localhost:8080/chat');
+
+  chatSocket.onmessage = function(event) {
+    const chatBox = document.getElementById('chatBox');
+    chatBox.innerHTML += `<p>${event.data}</p>`;
+    chatBox.scrollTop = chatBox.scrollHeight; // 최신 메시지가 보이도록 스크롤
+  };
+
+  function sendMessage() {
+    const input = document.getElementById('messageInput');
+    if (input.value.trim() !== '') { // 비어있지 않은 경우에만 전송
+      chatSocket.send(input.value);
+      input.value = ''; // 입력 필드 초기화
+    }
+  }
+
+  // 엔터 키로 메시지 전송
+  document.getElementById('messageInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+#spring:
+#  data:
+#    mongodb:
+#      uri: mongodb+srv://sparta:asd123%21@cluster0.gysrn.mongodb.net/ezloan?retryWrites=true&w=majority&appName=Cluster0
+
+server:
+  tomcat:
+    max-connections: 20000
+    threads:
+      max: 600
+      min-spare: 100
+  port: 8080

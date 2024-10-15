@@ -6,8 +6,8 @@ spring:
     import:
       - monitoring.yml
       - logging.yml
-      - example-storage.yml
-  web.resources.add-mappings: false
+      - chat-storage.yml
+  web.resources.add-mappings: true
 
 server:
   tomcat:

@@ -10,4 +10,11 @@ dependencies {
     runtimeOnly project(":chat:chat-storage")
 
     testImplementation project(":tests:api-docs")
+
+    // Spring Boot Starter WebFlux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // Spring Boot Starter WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // Reactor Core (리액티브 프로그래밍을 위한 필수 라이브러리)
+    implementation 'io.projectreactor:reactor-core'
 }

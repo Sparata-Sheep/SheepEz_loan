@@ -9,6 +9,11 @@ public record LawyerResponse(Long id, String nickname, String name, String email
 
     public static LawyerResponse of(Lawyer lawyer) {
         return new LawyerResponse(lawyer.getId(), lawyer.getNickname(), lawyer.getName(), lawyer.getEmail(),
+                lawyer.getIntroduction(), lawyer.getCertificationInfo(), lawyer.getCareer(), null);
+    }
+
+    public static LawyerResponse ofWithReview(Lawyer lawyer) {
+        return new LawyerResponse(lawyer.getId(), lawyer.getNickname(), lawyer.getName(), lawyer.getEmail(),
                 lawyer.getIntroduction(), lawyer.getCertificationInfo(), lawyer.getCareer(),
                 lawyer.getReviewList().stream().map(ReviewResponse::of).toList());
     }

@@ -54,7 +54,7 @@ public class LawyerController {
     @GetMapping("/{lawyerId}")
     public ApiResponse<LawyerResponse> getLawyer(@PathVariable Long lawyerId) {
         Lawyer result = lawyerService.getLawyer(lawyerId);
-        return ApiResponse.success(LawyerResponse.of(result));
+        return ApiResponse.success(LawyerResponse.ofWithReview(result));
     }
 
     @DeleteMapping("/{lawyerId}")

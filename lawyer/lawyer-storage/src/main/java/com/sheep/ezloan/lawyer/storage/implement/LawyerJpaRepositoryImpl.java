@@ -30,10 +30,11 @@ public class LawyerJpaRepositoryImpl implements LawyerCustomRepository {
     QLawyerEntity lawyer = QLawyerEntity.lawyerEntity;
 
     @Override
-    public Page<LawyerEntity> searchLawyers(String searchQuery, Pageable pageable) {
+    public Page<LawyerEntity> searchLawyers(String searchQuery, Pageable pageable, Boolean isAccepted) {
         List<LawyerEntity> contents = queryFactory.select(lawyer)
             .from(lawyer)
             .where(searchQueryEq(searchQuery))
+            .where(lawyer.isAccepted.eq(isAccepted))
             .where(lawyer.isDeleted.isFalse())
             .orderBy(getOrderSpecifiers(pageable.getSort()).toArray(OrderSpecifier[]::new))
             .offset(pageable.getOffset())

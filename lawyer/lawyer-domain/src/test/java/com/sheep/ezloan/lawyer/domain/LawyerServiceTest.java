@@ -214,7 +214,8 @@ public class LawyerServiceTest {
         );
 
         // 레포지토리 동작 모킹
-        when(lawyerRepository.searchLawyers(searchQuery, sortBy, direction, page, size)).thenReturn(expectedDomainPage);
+        when(lawyerRepository.searchLawyers(searchQuery, sortBy, direction, page, size, true))
+            .thenReturn(expectedDomainPage);
 
         // 서비스 메서드 호출
         DomainPage<Lawyer> result = lawyerService.getLawyersBySearch(searchQuery, sortBy, direction, page, size);
@@ -229,7 +230,7 @@ public class LawyerServiceTest {
         assertEquals(expectedDomainPage.getData(), result.getData());
 
         // 메서드 호출 검증
-        verify(lawyerRepository).searchLawyers(searchQuery, sortBy, direction, page, size);
+        verify(lawyerRepository).searchLawyers(searchQuery, sortBy, direction, page, size, true);
     }
 
 }

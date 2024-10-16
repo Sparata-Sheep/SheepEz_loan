@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
@@ -29,6 +30,7 @@ public class Lawyer {
 
     private Boolean isPublic;
 
+    @Setter
     private List<Review> reviewList;
 
     public Lawyer modify(String nickname, String email, String introduction, String certificationInfo, String career) {
@@ -37,6 +39,11 @@ public class Lawyer {
         this.introduction = introduction;
         this.certificationInfo = certificationInfo;
         this.career = career;
+        return this;
+    }
+
+    public Lawyer accept() {
+        this.isAccepted = true;
         return this;
     }
 

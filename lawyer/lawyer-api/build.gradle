@@ -5,6 +5,7 @@ dependencies {
     implementation project(":support:monitoring")
     implementation project(":support:logging")
     implementation project(":support:support-api")
+    implementation project(":support:support-authentication")
 
     implementation project(":lawyer:lawyer-domain")
     runtimeOnly project(":lawyer:lawyer-storage")

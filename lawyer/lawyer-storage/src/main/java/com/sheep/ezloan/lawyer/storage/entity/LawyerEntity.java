@@ -90,4 +90,9 @@ public class LawyerEntity extends BaseEntity {
         return this;
     }
 
+    public LawyerEntity accept() {
+        this.isAccepted = true;
+        return this;
+    }
+
 }

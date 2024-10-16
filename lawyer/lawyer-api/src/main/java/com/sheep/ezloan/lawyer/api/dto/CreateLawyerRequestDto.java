@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateLawyerRequestDto(
 
-        @NotNull(message = "userId is required") Long userId,
-
         @NotBlank(message = "nickname is required") String nickname,
 
         @NotBlank(message = "name is required") String name,

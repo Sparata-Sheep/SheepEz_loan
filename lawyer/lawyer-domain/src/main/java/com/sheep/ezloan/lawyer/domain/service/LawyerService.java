@@ -48,7 +48,21 @@ public class LawyerService {
 
     public DomainPage<Lawyer> getLawyersBySearch(String searchQuery, String sortBy, String direction, Integer page,
             Integer size) {
-        return lawyerRepository.searchLawyers(searchQuery, sortBy, direction, page, size);
+        return lawyerRepository.searchLawyers(searchQuery, sortBy, direction, page, size, true);
+    }
+
+    public DomainPage<Lawyer> getWaitingLawyersBySearch(String searchQuery, String sortBy, String direction,
+            Integer page, Integer size) {
+        return lawyerRepository.searchLawyers(searchQuery, sortBy, direction, page, size, false);
+    }
+
+    public Lawyer approveLawyer(Long id) {
+        Lawyer lawyer = lawyerRepository.findById(id);
+        if (lawyer.getIsAccepted() == true) {
+            throw new RuntimeException("Lawyer is already accepted");
+        }
+        lawyer.accept();
+        return lawyerRepository.updateIsAccepted(lawyer);
     }
 
 }

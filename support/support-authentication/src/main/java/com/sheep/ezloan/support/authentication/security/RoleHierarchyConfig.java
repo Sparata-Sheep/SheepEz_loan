@@ -1,4 +1,4 @@
-package com.sheep.ezloan.support.authentication.securityy;
+package com.sheep.ezloan.support.authentication.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ public class RoleHierarchyConfig {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
 
         // 상하 관계 정의
-        String hierarchy = "ROLE_MASTER > ROLE_USER \n" + "ROLE_MASTER > ROLE_USER";
+        String hierarchy = "ROLE_MASTER > ROLE_USER \n" + "ROLE_MASTER > ROLE_LAWYER";
 
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;

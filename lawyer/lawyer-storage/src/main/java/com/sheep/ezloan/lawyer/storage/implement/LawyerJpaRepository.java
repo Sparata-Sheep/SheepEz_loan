@@ -10,4 +10,6 @@ public interface LawyerJpaRepository extends JpaRepository<LawyerEntity, Long>, 
 
     Optional<LawyerEntity> findByIdAndIsDeletedFalse(Long id);
 
+    Optional<LawyerEntity> findByIdAndIsDeletedFalseAndIsAcceptedTrue(Long id);
+
 }

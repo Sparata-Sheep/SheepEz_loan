@@ -7,6 +7,6 @@ import com.sheep.ezloan.lawyer.storage.entity.LawyerEntity;
 
 public interface LawyerCustomRepository {
 
-    Page<LawyerEntity> searchLawyers(String searchQuery, Pageable pageable);
+    Page<LawyerEntity> searchLawyers(String searchQuery, Pageable pageable, Boolean isAccepted);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sheep.ezloan.lawyer.domain.model.Lawyer;
 import com.sheep.ezloan.lawyer.domain.repository.LawyerRepository;
 import com.sheep.ezloan.lawyer.storage.entity.LawyerEntity;
+import com.sheep.ezloan.lawyer.storage.entity.ReviewEntity;
 import com.sheep.ezloan.support.model.DomainPage;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class LawyerRepositoryAdapter implements LawyerRepository {
 
     private final LawyerJpaRepository lawyerJpaRepository;
+
+    private final ReviewJpaRepository reviewJpaRepository;
 
     @Override
     public Lawyer saveLawyer(Lawyer lawyer) {
@@ -51,7 +54,15 @@ public class LawyerRepositoryAdapter implements LawyerRepository {
 
     @Override
     public Lawyer findById(Long id) {
-        return lawyerJpaRepository.findByIdAndIsDeletedFalse(id).orElseThrow(EntityNotFoundException::new).toDomain();
+        Lawyer lawyer = lawyerJpaRepository.findByIdAndIsDeletedFalseAndIsAcceptedTrue(id)
+            .orElseThrow(EntityNotFoundException::new)
+            .toDomain();
+        lawyer.setReviewList(reviewJpaRepository.findByLawyerIdAndIsDeletedFalse(lawyer.getId())
+            .stream()
+            .map(ReviewEntity::toDomain)
+            .toList());
+
+        return lawyer;
     }
 
     @Override
@@ -64,14 +75,25 @@ public class LawyerRepositoryAdapter implements LawyerRepository {
     }
 
     @Override
-    public DomainPage<Lawyer> searchLawyers(String searchQuery, String sortBy, String direction, int page, int size) {
+    public DomainPage<Lawyer> searchLawyers(String searchQuery, String sortBy, String direction, int page, int size,
+            Boolean isAccepted) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Lawyer> lawyerPage = lawyerJpaRepository.searchLawyers(searchQuery, pageable).map(LawyerEntity::toDomain);
+        Page<Lawyer> lawyerPage = lawyerJpaRepository.searchLawyers(searchQuery, pageable, isAccepted)
+            .map(LawyerEntity::toDomain);
 
         return DomainPage.of(lawyerPage.getContent(), lawyerPage.getTotalElements(), lawyerPage.getTotalPages(),
                 lawyerPage.getNumber(), lawyerPage.getSize(), lawyerPage.hasNext());
+    }
+
+    @Transactional
+    @Override
+    public Lawyer updateIsAccepted(Lawyer acceptedLawyer) {
+        LawyerEntity targetLawyerEntity = lawyerJpaRepository.findByIdAndIsDeletedFalse(acceptedLawyer.getId())
+            .orElseThrow(EntityNotFoundException::new);
+        targetLawyerEntity.accept();
+        return targetLawyerEntity.toDomain();
     }
 
 }

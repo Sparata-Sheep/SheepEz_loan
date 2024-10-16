@@ -1,4 +1,4 @@
-package com.sheep.ezloan.support.authentication.securityy.filter;
+package com.sheep.ezloan.support.authentication.security.filter;
 
 import java.io.IOException;
 import java.util.Arrays;

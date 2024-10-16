@@ -1,4 +1,4 @@
-package com.sheep.ezloan.support.authentication.securityy;
+package com.sheep.ezloan.support.authentication.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,11 +10,11 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.sheep.ezloan.support.authentication.securityy.filter.CustomAuthenticationFilter;
+import com.sheep.ezloan.support.authentication.security.filter.CustomAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
-@ComponentScan("com.sheep.ezloan.support.authentication")
+@ComponentScan("com.sheep.ezloan")
 public class SecurityConfig {
 
     private final CustomAuthenticationFilter customAuthenticationFilter;
@@ -25,8 +25,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) // H2 콘솔에 대해
-                                                                          // CSRF 비활성화
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/**")) // H2 콘솔에
+                                                                                 // 대해
+            // CSRF 비활성화
             .authorizeHttpRequests(authz -> authz.requestMatchers("/h2-console/**", "/feign/**", "/actuator/**")
                 .permitAll() // H2 콘솔에 대한 접근 허용
                 .anyRequest()
@@ -41,7 +42,6 @@ public class SecurityConfig {
             .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 커스텀
                                                                                                       // 필터
                                                                                                       // 추가
-
         return http.build();
     }
 

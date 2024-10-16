@@ -1,7 +1,11 @@
 package com.sheep.ezloan.lawyer.api.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,13 +32,16 @@ public class LawyerController {
     public final LawyerService lawyerService;
 
     @PostMapping
-    public ApiResponse<LawyerResponse> createLawyer(@RequestBody CreateLawyerRequestDto requestDto) {
-        Lawyer createdLawyer = lawyerService.createLawyer(requestDto.userId(), requestDto.nickname(), requestDto.name(),
-                requestDto.email(), requestDto.introduction(), requestDto.certificationInfo(), requestDto.career());
+    public ApiResponse<LawyerResponse> createLawyer(@RequestBody CreateLawyerRequestDto requestDto,
+            HttpServletRequest request) {
+        Lawyer createdLawyer = lawyerService.createLawyer(Long.parseLong(request.getHeader("X-User-Id")),
+                requestDto.nickname(), requestDto.name(), requestDto.email(), requestDto.introduction(),
+                requestDto.certificationInfo(), requestDto.career());
 
         return ApiResponse.success(LawyerResponse.of(createdLawyer));
     }
 
+    @PreAuthorize("hasRole('LAWYER')")
     @PutMapping("/{lawyerId}")
     public ApiResponse<LawyerResponse> modifyLawyer(@PathVariable Long lawyerId,
             @RequestBody ModifyLawyerRequestDto requestDto) {
@@ -66,6 +73,27 @@ public class LawyerController {
         return ApiResponse
             .success(DomainPage.of(result.getData().stream().map(LawyerResponse::of).toList(), result.getTotalItems(),
                     result.getTotalPages(), result.getCurrentPage(), result.getPageSize(), result.getHasNext()));
+    }
+
+    @PreAuthorize("hasRole('MASTER')")
+    @GetMapping("/waiting")
+    public ApiResponse<DomainPage<LawyerResponse>> searchWaitingLawyers(
+            @RequestParam(defaultValue = "") String searchQuery,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction, @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        DomainPage<Lawyer> result = lawyerService.getLawyersBySearch(searchQuery, sortBy, direction, page, size);
+
+        return ApiResponse
+            .success(DomainPage.of(result.getData().stream().map(LawyerResponse::of).toList(), result.getTotalItems(),
+                    result.getTotalPages(), result.getCurrentPage(), result.getPageSize(), result.getHasNext()));
+    }
+
+    @PreAuthorize("hasRole('MASTER')")
+    @PatchMapping("/{lawyerId}")
+    public ApiResponse<LawyerResponse> approveLawyer(@PathVariable Long lawyerId) {
+        Lawyer result = lawyerService.approveLawyer(lawyerId);
+        return ApiResponse.success(LawyerResponse.of(result));
     }
 
 }

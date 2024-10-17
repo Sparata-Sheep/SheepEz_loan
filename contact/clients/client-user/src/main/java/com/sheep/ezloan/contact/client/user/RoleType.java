@@ -1,4 +1,4 @@
-package com.sheep.ezloan.contact.domain.client;
+package com.sheep.ezloan.contact.client.user;
 
 public enum RoleType {
 

@@ -1,6 +1,6 @@
 package com.sheep.ezloan.contact.domain.service;
 
-import com.sheep.ezloan.contact.domain.client.UserClient;
+import com.sheep.ezloan.contact.client.user.UserClient;
 import com.sheep.ezloan.contact.domain.model.*;
 import com.sheep.ezloan.contact.domain.repository.ContractRepository;
 import com.sheep.ezloan.contact.domain.repository.PostRepository;

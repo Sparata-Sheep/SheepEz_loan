@@ -1,6 +1,7 @@
 dependencies {
     api project(":support:support-domain")
     api project(":support:error")
+    implementation project(":contact:clients:client-user")
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

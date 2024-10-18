@@ -2,8 +2,8 @@ package com.sheep.ezloan.contact.api.controller.dto;
 
 import com.sheep.ezloan.contact.domain.model.ContractResult;
 import com.sheep.ezloan.contact.domain.model.ContractStatus;
+import com.sheep.ezloan.contact.domain.model.S3Result;
 import com.sheep.ezloan.support.model.DomainPage;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -91,6 +91,20 @@ public interface ContractDto {
 
         public static List<Response> of(DomainPage<ContractResult> contracts) {
             return contracts.getData().stream().map(Response::of).collect(Collectors.toList());
+        }
+
+    }
+
+    @Data
+    @Builder
+    class S3Response {
+
+        private UUID contractUuid;
+
+        private String uploadFileUrl;
+
+        public static S3Response of(S3Result s3Result, UUID contractUuid) {
+            return S3Response.builder().contractUuid(contractUuid).uploadFileUrl(s3Result.getUploadFileUrl()).build();
         }
 
     }

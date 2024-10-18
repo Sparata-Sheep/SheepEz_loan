@@ -7,6 +7,7 @@ spring:
       - monitoring.yml
       - logging.yml
       - contact-storage.yml
+      - s3.yml
   web.resources.add-mappings: false
 
 server:

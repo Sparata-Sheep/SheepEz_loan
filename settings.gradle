@@ -41,5 +41,6 @@ include 'contact:s3'
 include 'lawyer:lawyer-api'
 include 'lawyer:lawyer-domain'
 include 'lawyer:lawyer-storage'
+include 'lawyer:client-user'
 
 include 'clients:client-user'

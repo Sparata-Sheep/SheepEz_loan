@@ -66,6 +66,14 @@ public class LawyerRepositoryAdapter implements LawyerRepository {
     }
 
     @Override
+    public Lawyer findByIdNotAccepted(Long id) {
+
+		return lawyerJpaRepository.findByIdAndIsDeletedFalseAndIsAcceptedFalse(id)
+            .orElseThrow(EntityNotFoundException::new)
+            .toDomain();
+    }
+
+    @Override
     @Transactional
     public Lawyer deleteById(Long id) {
         LawyerEntity targetLawyerEntity = lawyerJpaRepository.findByIdAndIsDeletedFalse(id)
@@ -86,6 +94,7 @@ public class LawyerRepositoryAdapter implements LawyerRepository {
         return DomainPage.of(lawyerPage.getContent(), lawyerPage.getTotalElements(), lawyerPage.getTotalPages(),
                 lawyerPage.getNumber(), lawyerPage.getSize(), lawyerPage.hasNext());
     }
+
 
     @Transactional
     @Override

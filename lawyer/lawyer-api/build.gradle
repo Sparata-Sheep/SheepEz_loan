@@ -9,6 +9,7 @@ dependencies {
 
     implementation project(":lawyer:lawyer-domain")
     runtimeOnly project(":lawyer:lawyer-storage")
+    runtimeOnly project(":lawyer:client-user")
 
     testImplementation project(":tests:api-docs")
 

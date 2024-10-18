@@ -11,6 +11,8 @@ public interface LawyerRepository {
 
     Lawyer findById(Long id);
 
+    Lawyer findByIdNotAccepted(Long id);
+
     Lawyer deleteById(Long id);
 
     DomainPage<Lawyer> searchLawyers(String searchQuery, String sortBy, String direction, int page, int size,

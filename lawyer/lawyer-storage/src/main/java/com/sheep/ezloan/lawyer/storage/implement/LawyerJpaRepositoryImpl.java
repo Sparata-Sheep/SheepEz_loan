@@ -41,7 +41,8 @@ public class LawyerJpaRepositoryImpl implements LawyerCustomRepository {
             .limit(pageable.getPageSize())
             .fetch();
 
-        JPAQuery<Long> count = queryFactory.select(lawyer.count()).from(lawyer).where(searchQueryEq(searchQuery));
+        JPAQuery<Long> count = queryFactory.select(lawyer.count()).from(lawyer).where(searchQueryEq(searchQuery)).where(
+            lawyer.isAccepted.eq(isAccepted)).where(lawyer.isDeleted.isFalse());
 
         return PageableExecutionUtils.getPage(contents, pageable, count::fetchOne);
     }

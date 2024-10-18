@@ -101,10 +101,10 @@ public interface ContractDto {
 
         private UUID contractUuid;
 
-        private String uploadFilePath;
+        private String uploadFileUrl;
 
         public static S3Response of(S3Result s3Result, UUID contractUuid) {
-            return S3Response.builder().contractUuid(contractUuid).uploadFilePath(s3Result.getUploadFilePath()).build();
+            return S3Response.builder().contractUuid(contractUuid).uploadFileUrl(s3Result.getUploadFileUrl()).build();
         }
 
     }

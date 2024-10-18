@@ -9,6 +9,7 @@ dependencies {
 
     implementation project(":contact:contact-domain")
     runtimeOnly project(":contact:contact-storage")
+    runtimeOnly project(":contact:s3")
 
     testImplementation project(":tests:api-docs")
 

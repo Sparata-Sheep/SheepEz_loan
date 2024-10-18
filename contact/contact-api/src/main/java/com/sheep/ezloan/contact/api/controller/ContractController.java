@@ -10,6 +10,7 @@ import com.sheep.ezloan.support.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -144,6 +145,23 @@ public class ContractController {
         }
 
         return ApiResponse.success(deletedContract);
+    }
+
+    @PostMapping("/upload/{contractUuid}")
+    public ApiResponse<?> uploadContractFile(@PathVariable(value = "contractUuid") UUID contractUuid,
+            @RequestHeader("X-User-Id") Long userId, @RequestHeader("X-Role") String role,
+            @RequestParam(value = "file") MultipartFile multipartFile) {
+        ContractDto.S3Response s3Response;
+
+        try {
+            s3Response = ContractDto.S3Response
+                .of(contractService.uploadContractFile(contractUuid, userId, role, multipartFile), contractUuid);
+        }
+        catch (CoreApiException e) {
+            return ApiResponse.error(e.getErrorType());
+        }
+
+        return ApiResponse.success(s3Response);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.sheep.ezloan.contact.domain.service;
 
 import com.sheep.ezloan.contact.client.user.UserClient;
+import com.sheep.ezloan.contact.domain.fileManager.FileManagerInterface;
 import com.sheep.ezloan.contact.domain.model.*;
 import com.sheep.ezloan.contact.domain.repository.ContractRepository;
 import com.sheep.ezloan.contact.domain.repository.PostRepository;
@@ -10,6 +11,7 @@ import com.sheep.ezloan.support.model.DomainPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -23,6 +25,8 @@ public class ContractService {
     private final PostRepository postRepository;
 
     private final UserClient userClient;
+
+    private final FileManagerInterface fileManagerInterface;
 
     @Transactional
     public ContractResult createContract(String username, UUID postUuid, Long requestUserId, Long receiveUserId,
@@ -159,6 +163,23 @@ public class ContractService {
             throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
 
         return resultUuid;
+    }
+
+    @Transactional
+    public S3Result uploadContractFile(UUID contractUuid, Long userId, String role, MultipartFile file) {
+
+        ContractResult contract = contractRepository.findByUuid(contractUuid);
+
+        if (contract == null) {
+            throw new CoreApiException(ErrorType.NOT_FOUND_ERROR);
+        }
+
+        if (!Objects.equals(role, "MASTER") && !Objects.equals(contract.getRequestUserId(), userId)
+                && !Objects.equals(contract.getReceiveUserId(), userId)) {
+            throw new CoreApiException(ErrorType.FORBIDDEN_ERROR);
+        }
+
+        return fileManagerInterface.uploadFile(contractUuid, file);
     }
 
 }

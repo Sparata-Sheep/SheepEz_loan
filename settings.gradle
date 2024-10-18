@@ -36,6 +36,7 @@ include 'contact:contact-domain'
 include 'contact:contact-api'
 include 'contact:contact-storage'
 include 'contact:clients:client-user'
+include 'contact:s3'
 
 include 'lawyer:lawyer-api'
 include 'lawyer:lawyer-domain'

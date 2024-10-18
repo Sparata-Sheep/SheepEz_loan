@@ -82,7 +82,7 @@ public class LawyerController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String direction, @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        DomainPage<Lawyer> result = lawyerService.getLawyersBySearch(searchQuery, sortBy, direction, page, size);
+        DomainPage<Lawyer> result = lawyerService.getWaitingLawyersBySearch(searchQuery, sortBy, direction, page, size);
 
         return ApiResponse
             .success(DomainPage.of(result.getData().stream().map(LawyerResponse::of).toList(), result.getTotalItems(),

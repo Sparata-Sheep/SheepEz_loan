@@ -40,5 +40,6 @@ include 'contact:clients:client-user'
 include 'lawyer:lawyer-api'
 include 'lawyer:lawyer-domain'
 include 'lawyer:lawyer-storage'
+include 'lawyer:client-user'
 
 include 'clients:client-user'

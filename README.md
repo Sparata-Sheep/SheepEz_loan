@@ -21,7 +21,7 @@
   ```
 ---
 # 🏗️ 서비스 아키텍처 & CI/CD 파이프라인
-![image](https://github.com/user-attachments/assets/66f676c5-6b43-4ed6-9e71-25a003f45889)
+![image](https://github.com/user-attachments/assets/b761ff31-d1e3-4787-915f-fa711e523c20)
 
 ---
 # 💰 주요 기능

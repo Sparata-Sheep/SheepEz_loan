@@ -13,4 +13,5 @@ public interface JpaChatRepository extends JpaRepository<ChatEntity, UUID> {
     // participants 리스트에 해당 사용자가 포함된 채팅방을 조회하는 쿼리
     @Query("SELECT c FROM ChatEntity c WHERE :participantId MEMBER OF c.participants")
     List<ChatEntity> findByParticipantId(Long participantId);
+
 }

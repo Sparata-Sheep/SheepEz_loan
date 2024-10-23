@@ -48,7 +48,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             chatMessageRepository.save(chatMessage).subscribe();
 
             // Kafka로 메시지 전송
-            chatMessageProducer.sendMessage(String.valueOf(chatMessage.getChatUuid()), chatMessage); // chattingUuid를 토픽으로 사용
+            chatMessageProducer.sendMessage(String.valueOf(chatMessage.getChatUuid()), chatMessage); // chattingUuid를
+                                                                                                     // 토픽으로
+                                                                                                     // 사용
         }
         catch (Exception e) {
             e.printStackTrace();

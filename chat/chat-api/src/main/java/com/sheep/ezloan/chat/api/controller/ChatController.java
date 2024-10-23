@@ -26,7 +26,8 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/{postUuid}/rooms")
-    public Mono<ResponseEntity<UUID>> createChatRoom(@RequestHeader("X-User-Id") Long userId, @PathVariable UUID postUuid) {
+    public Mono<ResponseEntity<UUID>> createChatRoom(@RequestHeader("X-User-Id") Long userId,
+            @PathVariable UUID postUuid) {
         return chatService.createChatRoom(userId, postUuid)
             .map(chat -> ResponseEntity.ok(chat.getUuid()))
             .defaultIfEmpty(ResponseEntity.notFound().build());

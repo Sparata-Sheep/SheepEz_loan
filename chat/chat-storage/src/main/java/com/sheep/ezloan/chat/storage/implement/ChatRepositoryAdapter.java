@@ -51,8 +51,12 @@ public class ChatRepositoryAdapter implements ChatRepository {
 
     @Override
     public Flux<Chat> findByParticipantId(Long participantId) {
-        return Flux.fromIterable(jpaChatRepository.findByParticipantId(participantId)) // 블로킹 호출을 리액티브로 변환
+        return Flux.fromIterable(jpaChatRepository.findByParticipantId(participantId)) // 블로킹
+                                                                                       // 호출을
+                                                                                       // 리액티브로
+                                                                                       // 변환
             .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업을 별도의 스레드에서 처리
             .map(ChatEntity::toDomain); // 엔티티를 도메인 객체로 변환
     }
+
 }

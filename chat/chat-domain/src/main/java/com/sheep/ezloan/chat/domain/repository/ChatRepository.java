@@ -17,4 +17,5 @@ public interface ChatRepository {
     // participants 리스트에 해당 사용자가 포함된 채팅방을 조회하는 쿼리
     @Query("SELECT c FROM ChatEntity c WHERE :participantId MEMBER OF c.participants")
     Flux<Chat> findByParticipantId(Long participantId); // 사용자가 포함된 채팅방만 조회
+
 }

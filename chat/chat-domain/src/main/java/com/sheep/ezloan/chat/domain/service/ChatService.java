@@ -26,7 +26,7 @@ public class ChatService {
 
     // 채팅방 생성
     public Mono<Chat> createChatRoom(Long userId, UUID postUuid) {
-        if(roleType == RoleType.LAWYER) {
+        if (roleType == RoleType.LAWYER) {
             return Mono.error(new IllegalStateException("변호사는 채팅방을 생성할 수 없습니다."));
         }
 
@@ -74,10 +74,11 @@ public class ChatService {
 
     // 채팅방 전체 조회
     public Flux<Chat> getAllChatRooms() {
-        if(roleType == RoleType.MASTER) {
+        if (roleType == RoleType.MASTER) {
             // 관리자는 모든 채팅방 조회 가능
             return chatRepository.findAll();
-        } else {
+        }
+        else {
             // 일반 사용자와 변호사는 자신이 포함된 채팅방만 조회 가능
             return chatRepository.findByParticipantId(userId);
         }
@@ -85,10 +86,11 @@ public class ChatService {
 
     // 채팅방 단건 조회
     public Mono<Chat> getChatById(UUID chatUuid) {
-        if(roleType == RoleType.MASTER) {
+        if (roleType == RoleType.MASTER) {
             // 관리자는 모든 채팅방 조회 가능
             return chatRepository.findByUuid(chatUuid);
-        } else {
+        }
+        else {
             // 일반 사용자와 변호사는 자신이 속한 채팅방만 조회 가능
             return chatRepository.findByUuid(chatUuid)
                 .filter(chat -> chat.getParticipants().contains(userId))

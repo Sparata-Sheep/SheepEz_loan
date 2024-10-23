@@ -43,4 +43,10 @@ include 'lawyer:lawyer-domain'
 include 'lawyer:lawyer-storage'
 include 'lawyer:client-user'
 
+include 'chat:chat-api'
+include 'chat:chat-domain'
+include 'chat:chat-storage'
+include 'chat:chat-webflux'
+
+include 'clients:client-post'
 include 'clients:client-user'

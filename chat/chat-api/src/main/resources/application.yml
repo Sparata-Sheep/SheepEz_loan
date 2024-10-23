@@ -1,4 +1,4 @@
-spring.application.name: user-service
+spring.application.name: chat-service
 spring.profiles.active: local
 
 spring:
@@ -6,8 +6,8 @@ spring:
     import:
       - monitoring.yml
       - logging.yml
-      - user-storage.yml
-  web.resources.add-mappings: false
+      - chat-storage.yml
+  web.resources.add-mappings: true
 
 server:
   tomcat:
@@ -15,24 +15,15 @@ server:
     threads:
       max: 600
       min-spare: 100
-  port: 19092
+  port: 19095
 
-admin:
-  default:
-    password: ${password}
-
+api:
+  prefix: "/api/v1"
 
 ---
 spring.config.activate.on-profile: local
 
-jwt:
-  secret:
-    key: ${jwt.secret.key}
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka:8761/eureka/
 ---
 spring.config.activate.on-profile: local-dev
 
@@ -40,13 +31,7 @@ spring.config.activate.on-profile: local-dev
 ---
 spring.config.activate.on-profile: dev
 
-jwt:
-  secret:
-    key: ${jwt.secret.key}
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka:8761/eureka/
+
 ---
 spring.config.activate.on-profile: staging
 

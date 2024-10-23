@@ -1,4 +1,4 @@
-spring.application.name: chat-api
+spring.application.name: chat-service
 spring.profiles.active: local
 
 spring:
@@ -17,8 +17,8 @@ server:
       min-spare: 100
   port: 19095
 
-  api:
-    prefix: "/api/v1"
+api:
+  prefix: "/api/v1"
 
 ---
 spring.config.activate.on-profile: local

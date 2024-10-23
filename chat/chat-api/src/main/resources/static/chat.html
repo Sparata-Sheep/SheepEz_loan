@@ -11,6 +11,10 @@
       margin: 0;
       padding: 20px;
     }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
     #chatBox {
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -20,11 +24,47 @@
       overflow-y: scroll;
       margin-bottom: 10px;
     }
-    #messageInput {
-      width: calc(100% - 100px);
+    .message {
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      clear: both;
+      max-width: 70%; /* 메시지 최대 너비 */
+    }
+    .sender {
+      font-weight: bold;
+      color: #4CAF50;
+    }
+    .timestamp {
+      font-size: 0.85em;
+      color: #999;
+    }
+    /* 자기 자신이 보낸 메시지 스타일 */
+    .message.self {
+      background-color: #d1e7dd; /* 연한 초록색 배경 */
+      margin-left: auto; /* 오른쪽 정렬 */
+    }
+    /* 상대방 메시지 스타일 */
+    .message.other {
+      background-color: #f8d7da; /* 연한 빨간색 배경 */
+      margin-right: auto; /* 왼쪽 정렬 */
+    }
+    #usernameInput {
+      width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
+      outline: none;
+      font-size: 1em;
+      margin-bottom: 10px;
+    }
+    #messageInput {
+      width: calc(100% - 110px);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+      font-size: 1em;
     }
     button {
       padding: 10px 20px;
@@ -33,46 +73,90 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 1em;
     }
-    button:hover {
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    button:hover:enabled {
       background-color: #45a049;
     }
-    p {
-      margin: 5px 0;
+    .chat-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   </style>
 </head>
 <body>
 <h1>채팅 애플리케이션</h1>
+
 <div id="chatBox"></div>
-<div>
+<div class="chat-container">
   <input id="messageInput" type="text" placeholder="메시지를 입력하세요..." />
-  <button onclick="sendMessage()">전송</button>
+  <button id="sendButton" onclick="sendMessage()" disabled>전송</button>
 </div>
+
+<br>
+<br>
+<!-- 사용자 이름 입력 필드 추가 -->
+<input id="usernameInput" type="text" placeholder="사용자 이름을 입력하세요..." />
 
 <script>
   const chatSocket = new WebSocket('ws://localhost:8080/chat');
 
+  // 웹소켓 메시지 수신 시 처리
   chatSocket.onmessage = function(event) {
     const chatBox = document.getElementById('chatBox');
-    chatBox.innerHTML += `<p>${event.data}</p>`;
+    const messageData = JSON.parse(event.data);
+
+    // 현재 사용자의 이름을 가져옴
+    const usernameInput = document.getElementById('usernameInput').value.trim();
+    const isSelf = messageData.senderUserName === usernameInput; // 자기 자신인지 확인
+
+    const messageElement = `<div class="message ${isSelf ? 'self' : 'other'}">
+                              <span class="sender">${messageData.senderUserName}:</span>
+                              <span class="content">${messageData.content}</span>
+                              <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                            </div>`;
+    chatBox.innerHTML += messageElement;
     chatBox.scrollTop = chatBox.scrollHeight; // 최신 메시지가 보이도록 스크롤
   };
 
+  // 메시지 전송 함수
   function sendMessage() {
     const input = document.getElementById('messageInput');
-    if (input.value.trim() !== '') { // 비어있지 않은 경우에만 전송
-      chatSocket.send(input.value);
-      input.value = ''; // 입력 필드 초기화
-    }
+    const usernameInput = document.getElementById('usernameInput'); // 사용자 이름 입력 필드
+    const message = {
+      senderUserName: usernameInput.value.trim() || '익명', // 입력된 사용자 이름 사용, 비어있으면 '익명'
+      content: input.value
+    };
+    chatSocket.send(JSON.stringify(message)); // JSON 형식으로 메시지 전송
+    input.value = ''; // 입력 필드 초기화
+    updateSendButtonState(); // 버튼 상태 업데이트
   }
 
-  // 엔터 키로 메시지 전송
+  // 메시지 입력 시 전송 버튼 활성화
+  function updateSendButtonState() {
+    const sendButton = document.getElementById('sendButton');
+    const usernameInput = document.getElementById('usernameInput').value.trim();
+    const messageInput = document.getElementById('messageInput').value.trim();
+    sendButton.disabled = !(usernameInput && messageInput); // 사용자 이름과 메시지가 모두 있어야 활성화
+  }
+
+  // 메시지 입력 시 전송 버튼 활성화 및 엔터 키로 전송
+  document.getElementById('messageInput').addEventListener('input', updateSendButtonState);
+
   document.getElementById('messageInput').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && event.target.value.trim() !== '') {
       sendMessage();
     }
   });
+
+  // 사용자 이름 입력 시 전송 버튼 상태 업데이트
+  document.getElementById('usernameInput').addEventListener('input', updateSendButtonState);
+
 </script>
 </body>
 </html>

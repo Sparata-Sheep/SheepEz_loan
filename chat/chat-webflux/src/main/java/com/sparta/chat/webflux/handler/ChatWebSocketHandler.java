@@ -1,5 +1,10 @@
 package com.sparta.chat.webflux.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sheep.ezloan.chat.domain.model.ChatMessage;
+import com.sheep.ezloan.chat.domain.repository.ChatMessageRepository;
+import com.sparta.chat.webflux.producer.ChatMessageProducer;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.springframework.web.socket.CloseStatus;
@@ -11,9 +16,20 @@ import reactor.core.publisher.Sinks;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private static final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
+
     private final Sinks.Many<String> sink = Sinks.many().multicast().directBestEffort();
 
-    public ChatWebSocketHandler() {
+    private final ChatMessageRepository chatMessageRepository;
+
+    private final ObjectMapper objectMapper;
+
+    private final ChatMessageProducer chatMessageProducer; // Producer 필드 추가
+
+    public ChatWebSocketHandler(ChatMessageRepository chatMessageRepository, ObjectMapper objectMapper,
+            ChatMessageProducer chatMessageProducer) {
+        this.chatMessageRepository = chatMessageRepository;
+        this.objectMapper = objectMapper;
+        this.chatMessageProducer = chatMessageProducer; // Producer 주입
         sink.asFlux().subscribe(this::sendMessageToAll);
     }
 
@@ -25,6 +41,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         sink.tryEmitNext(message.getPayload());
+
+        try {
+            ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
+            chatMessage.setTimestamp(LocalDateTime.now());
+            chatMessageRepository.save(chatMessage).subscribe();
+
+            // Kafka로 메시지 전송
+            chatMessageProducer.sendMessage(String.valueOf(chatMessage.getChatUuid()), chatMessage); // chattingUuid를 토픽으로 사용
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -37,10 +65,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             if (session.isOpen()) {
                 try {
                     session.sendMessage(new TextMessage(message));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
     }
+
 }

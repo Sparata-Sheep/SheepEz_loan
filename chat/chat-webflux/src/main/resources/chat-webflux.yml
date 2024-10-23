@@ -1,7 +1,7 @@
-#spring:
-#  data:
-#    mongodb:
-#      uri: mongodb+srv://sparta:asd123%21@cluster0.gysrn.mongodb.net/ezloan?retryWrites=true&w=majority&appName=Cluster0
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://sparta:asd123%21@cluster0.gysrn.mongodb.net/ezloan?retryWrites=true&w=majority&appName=Cluster0
 
 server:
   tomcat:
@@ -10,3 +10,14 @@ server:
       max: 600
       min-spare: 100
   port: 8080
+
+  spring:
+    kafka:
+      bootstrap-servers: localhost:9092 # Kafka 서버 주소
+      consumer:
+        group-id: chat-group # 소비자 그룹 ID
+        auto-offset-reset: earliest
+      producer:
+        retries: 3
+      topic:
+        name: chat_topic # 사용할 토픽 이름
